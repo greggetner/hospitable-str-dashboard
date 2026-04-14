@@ -1,4 +1,3 @@
-
 const SYSTEM_PROMPT = `You are an elite short-term rental business intelligence analyst for Greg's Sedona Retreats — a 3-property STR portfolio in Sedona, Arizona.
 
 Properties:
@@ -26,7 +25,7 @@ export async function POST(request) {
       "Content-Type": "application/json",
       "x-api-key": process.env.ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
-      "anthropic-beta": "mcp-client-2025-04-04",
+      "anthropic-beta": "mcp-client-2025-04-04"
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
@@ -34,13 +33,15 @@ export async function POST(request) {
       system: SYSTEM_PROMPT,
       messages,
       mcp_servers: [
-  {
-    type: "url",
-    url: "https://mcp.hospitable.com/mcp",
-    name: "hospitable",
-    authorization_token: process.env.HOSPITABLE_API_KEY,
-  },
-],
+        {
+          type: "url",
+          url: "https://mcp.hospitable.com/mcp",
+          name: "hospitable",
+          authorization_token: process.env.HOSPITABLE_API_KEY
+        }
+      ]
+    })
+  });
 
   const data = await response.json();
   return Response.json(data);
