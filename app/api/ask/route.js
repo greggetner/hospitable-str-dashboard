@@ -34,14 +34,13 @@ export async function POST(request) {
       system: SYSTEM_PROMPT,
       messages,
       mcp_servers: [
-        {
-          type: "url",
-          url: "https://mcp.hospitable.com/mcp",
-          name: "hospitable",
-        },
-      ],
-    }),
-  });
+  {
+    type: "url",
+    url: "https://mcp.hospitable.com/mcp",
+    name: "hospitable",
+    authorization_token: process.env.HOSPITABLE_API_KEY,
+  },
+],
 
   const data = await response.json();
   return Response.json(data);
