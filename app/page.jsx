@@ -6,6 +6,8 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 
+const PASSWORD = "sedona2026";
+
 const PRESETS = [
   { label: "Occupancy next 60 days", q: "What's my occupancy rate for the next 60 days across all 3 properties? Break it down by property." },
   { label: "Upcoming booking gaps", q: "Show me open/unbooked nights in the next 30 days across Sunup, Sundown, and The Casita." },
@@ -113,7 +115,78 @@ function LoadingDots() {
   );
 }
 
+function PasswordGate({ onUnlock }) {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState(false);
+
+  const attempt = () => {
+    if (value === PASSWORD) {
+      onUnlock();
+    } else {
+      setError(true);
+      setValue("");
+      setTimeout(() => setError(false), 2000);
+    }
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+      <div style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
+        <div style={{ width: 48, height: 48, borderRadius: 12, background: "#C4622D", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+          <svg width="22" height="22" viewBox="0 0 18 18" fill="none">
+            <path d="M9 1.5L2 5.5v5c0 4 3 6.7 7 7.7 4-1 7-3.7 7-7.7v-5L9 1.5z" fill="rgba(255,255,255,0.9)" />
+            <path d="M6 9l2.5 2.5 4-4" stroke="#C4622D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h1 style={{ fontSize: 20, fontWeight: 600, color: "#1a1008", marginBottom: 6 }}>Greg's Sedona Retreats</h1>
+        <p style={{ fontSize: 14, color: "#8a7060", marginBottom: 32 }}>STR Intelligence Dashboard</p>
+        <input
+          type="password"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && attempt()}
+          placeholder="Enter password"
+          style={{
+            width: "100%",
+            padding: "10px 14px",
+            fontSize: 14,
+            border: `1px solid ${error ? "#e05c2d" : "rgba(0,0,0,0.15)"}`,
+            borderRadius: 10,
+            outline: "none",
+            fontFamily: "inherit",
+            color: "#1a1008",
+            background: "#fff",
+            marginBottom: 12,
+            boxSizing: "border-box",
+            transition: "border-color 0.15s",
+          }}
+          autoFocus
+        />
+        {error && <p style={{ fontSize: 12, color: "#e05c2d", marginBottom: 12 }}>Incorrect password</p>}
+        <button
+          onClick={attempt}
+          style={{
+            width: "100%",
+            padding: "10px",
+            background: "#C4622D",
+            color: "white",
+            border: "none",
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: "pointer",
+            fontFamily: "inherit",
+          }}
+        >
+          Unlock
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
+  const [unlocked, setUnlocked] = useState(false);
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -123,6 +196,8 @@ export default function Dashboard() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  if (!unlocked) return <PasswordGate onUnlock={() => setUnlocked(true)} />;
 
   const ask = async (q) => {
     const text = (q || query).trim();
@@ -213,22 +288,3 @@ export default function Dashboard() {
           <button
             className="ask-btn"
             onClick={() => ask()}
-            disabled={!query.trim() || loading}
-            style={{ background: query.trim() && !loading ? "#C4622D" : "#f0e8e0", color: query.trim() && !loading ? "white" : "#aaa", border: "none", borderRadius: 8, padding: "6px 18px", fontSize: 13, fontWeight: 500, cursor: query.trim() && !loading ? "pointer" : "default", transition: "background 0.15s" }}
-          >
-            {loading ? "Thinking…" : "Ask"}
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-        {PRESETS.map((p, i) => (
-          <button key={i} className="preset-chip" onClick={() => ask(p.q)} disabled={loading}
-            style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.12)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: "#8a7060", cursor: loading ? "default" : "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
-            {p.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
