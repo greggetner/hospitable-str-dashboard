@@ -184,6 +184,7 @@ function PasswordGate({ onUnlock }) {
     </div>
   );
 }
+
 export default function Dashboard() {
   const [unlocked, setUnlocked] = useState(false);
   const [query, setQuery] = useState("");
