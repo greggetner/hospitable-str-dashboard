@@ -1,4 +1,3 @@
-export const runtime = "edge";
 
 const SYSTEM_PROMPT = `You are an elite short-term rental business intelligence analyst for Greg's Sedona Retreats — a 3-property STR portfolio in Sedona, Arizona.
 
