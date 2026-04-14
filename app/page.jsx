@@ -184,7 +184,6 @@ function PasswordGate({ onUnlock }) {
     </div>
   );
 }
-
 export default function Dashboard() {
   const [unlocked, setUnlocked] = useState(false);
   const [query, setQuery] = useState("");
@@ -206,7 +205,6 @@ export default function Dashboard() {
     const history = [...messages, { role: "user", content: text }];
     setMessages(history);
     setLoading(true);
-
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
@@ -288,3 +286,22 @@ export default function Dashboard() {
           <button
             className="ask-btn"
             onClick={() => ask()}
+            disabled={!query.trim() || loading}
+            style={{ background: query.trim() && !loading ? "#C4622D" : "#f0e8e0", color: query.trim() && !loading ? "white" : "#aaa", border: "none", borderRadius: 8, padding: "6px 18px", fontSize: 13, fontWeight: 500, cursor: query.trim() && !loading ? "pointer" : "default", transition: "background 0.15s" }}
+          >
+            {loading ? "Thinking…" : "Ask"}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
+        {PRESETS.map((p, i) => (
+          <button key={i} className="preset-chip" onClick={() => ask(p.q)} disabled={loading}
+            style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.12)", borderRadius: 20, padding: "5px 14px", fontSize: 12, color: "#8a7060", cursor: loading ? "default" : "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
